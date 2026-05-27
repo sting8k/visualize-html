@@ -83,7 +83,7 @@ The skill is designed to follow this loop:
 
 ![Uno Platform architecture preview](assets/uno-platform-architecture-preview.png)
 
-- [Uno Platform architecture bilingual visualization]([examples/uno-platform-architecture-bilingual.html](https://refined-github-html-preview.kidonng.workers.dev/sting8k/visualize-html/raw/refs/heads/master/examples/uno-platform-architecture-bilingual.html)) - Visualize HTML of <https://github.com/unoplatform/uno>.
+- [Uno Platform architecture bilingual visualization](https://refined-github-html-preview.kidonng.workers.dev/sting8k/visualize-html/raw/refs/heads/master/examples/uno-platform-architecture-bilingual.html) - Visualize HTML of <https://github.com/unoplatform/uno>.
 
 ## Attribution
 
