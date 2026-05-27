@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uno Platform Architecture / Kiến trúc Uno Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    html.theme-light { --bg:#f8fafc; --surface:#ffffff; --surface-hover:#f1f5f9; --border:rgba(15,23,42,.12); --text:#0f172a; --text-secondary:#64748b; --accent:#2563eb; --accent-secondary:#7c3aed; --positive:#059669; --negative:#dc2626; --warning:#d97706; --info:#0891b2; }
+    html.theme-dark { --bg:#0f172a; --surface:#111827; --surface-hover:#1f2937; --border:rgba(148,163,184,.22); --text:#e5e7eb; --text-secondary:#94a3b8; --accent:#60a5fa; --accent-secondary:#a78bfa; --positive:#34d399; --negative:#fb7185; --warning:#fbbf24; --info:#22d3ee; }
+    body { font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; letter-spacing:-.011em; }
+    h1,h2,h3,h4,h5,h6 { color:var(--text); letter-spacing:-.02em; } a{color:var(--accent)} .text-secondary{color:var(--text-secondary)!important}
+    .app-shell{max-width:1180px;margin:0 auto;padding:32px 20px 56px}.viz-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.06)}.theme-dark .viz-card{box-shadow:none}.section-label{color:var(--accent);font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.metric-value{color:var(--text);font-size:clamp(2rem,5vw,4rem);font-weight:800;line-height:1;letter-spacing:-.04em}.diagram-frame{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;overflow-x:auto}svg text{fill:var(--text)}.svg-muted{fill:var(--text-secondary);color:var(--text-secondary)}.svg-node{fill:var(--surface);stroke:var(--border)}.svg-edge{stroke:var(--accent);stroke-width:2;fill:none}.viz-menu{position:fixed;top:16px;right:16px;z-index:1030}.viz-menu .btn,.viz-menu .dropdown-menu{border-color:var(--border)}.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}.skip-link:focus{position:fixed;left:16px;top:16px;width:auto;height:auto;z-index:2000;padding:8px 12px;border-radius:8px;background:var(--accent);color:white;text-decoration:none}
+    .hero{position:relative;overflow:hidden;background:radial-gradient(circle at 20% 0%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 32%),linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--surface) 82%,var(--accent-secondary) 18%));}.hero h1{font-size:clamp(2.1rem,5vw,4.7rem);font-weight:800;line-height:1.04}.pill{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--border);border-radius:999px;padding:.35rem .7rem;background:color-mix(in srgb,var(--surface) 80%,var(--accent) 10%);font-weight:650;font-size:.82rem}.lang-switch,.focus-switch{display:flex;flex-wrap:wrap;gap:.5rem}.toggle-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:.48rem .85rem;font-weight:700}.toggle-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}.metric-card{padding:1rem;border-radius:14px;background:var(--surface-hover);border:1px solid var(--border)}.metric-card small{color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.05em}.legend{display:flex;flex-wrap:wrap;gap:.75rem}.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.9rem;color:var(--text-secondary)}.swatch{width:14px;height:14px;border-radius:4px;border:1px solid var(--border)}.swatch.core{background:color-mix(in srgb,var(--accent) 28%,var(--surface))}.swatch.runtime{background:color-mix(in srgb,var(--positive) 20%,var(--surface))}.swatch.tool{background:color-mix(in srgb,var(--warning) 22%,var(--surface))}.swatch.external{background:color-mix(in srgb,var(--surface) 88%,var(--text-secondary));border-style:dashed}.arch-diagram{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 92%,var(--accent) 8%),var(--surface));padding:16px}.arch-diagram svg{width:100%;min-width:820px;height:auto;display:block}.node rect,.node path,.node circle{fill:color-mix(in srgb,var(--surface) 82%,var(--accent) 18%);stroke:var(--border);stroke-width:1.5;filter:drop-shadow(0 10px 18px rgba(0,0,0,.12))}.node.core rect{fill:color-mix(in srgb,var(--accent) 25%,var(--surface) 75%);stroke:var(--accent)}.node.runtime rect{fill:color-mix(in srgb,var(--positive) 18%,var(--surface) 82%);stroke:color-mix(in srgb,var(--positive) 70%,var(--border))}.node.tool rect{fill:color-mix(in srgb,var(--warning) 18%,var(--surface) 82%);stroke:color-mix(in srgb,var(--warning) 70%,var(--border))}.node.external rect{fill:color-mix(in srgb,var(--surface) 85%,var(--text-secondary) 15%);stroke:var(--border);stroke-dasharray:7 5}.node text{fill:var(--text);font:700 14px/1.2 Inter,system-ui,sans-serif;text-anchor:middle;dominant-baseline:middle;pointer-events:none}.node .subtext{fill:var(--text-secondary);font-size:11px;font-weight:600}.edge{fill:none;stroke:color-mix(in srgb,var(--text-secondary) 70%,var(--accent) 30%);stroke-width:2;marker-end:url(#arrow)}.edge.strong{stroke:var(--accent);stroke-width:2.8}.edge.runtime{stroke:var(--positive)}.edge.dashed{stroke-dasharray:7 6}.edge-label{fill:var(--text-secondary);font:700 11px/1 Inter,system-ui,sans-serif;text-anchor:middle}.layer-band{fill:color-mix(in srgb,var(--surface-hover) 82%,transparent);stroke:var(--border);stroke-dasharray:6 6}.layer-title{fill:var(--text-secondary);font:800 12px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}.takeaway{border-left:3px solid var(--accent);padding-left:1rem}.lang-vi .en,.lang-en .vi{display:none!important}.diagram-section.dimmed{opacity:.36;filter:saturate(.55)}.diagram-section.highlight{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:4px}.evidence code{color:var(--accent);background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:.1rem .35rem}.kbd-like{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface-hover);border:1px solid var(--border);border-radius:6px;padding:.12rem .35rem;color:var(--text)}
+    @media(max-width:768px){.app-shell{padding:24px 14px 40px}.viz-menu{top:10px;right:10px}.arch-diagram svg{min-width:760px}.metric-value{font-size:2.2rem}}@media print{body{background:white!important;color:black!important}.viz-menu,.skip-link,.controls{display:none!important}.viz-card,.diagram-frame,.arch-diagram{border:1px solid #ddd!important;box-shadow:none!important}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}.lang-vi .en,.lang-en .vi{display:none!important}}
+  </style>
+</head>
+<body class="lang-en">
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div class="viz-menu dropdown">
+    <button class="btn btn-sm btn-outline-secondary bg-body dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+      <li><button class="dropdown-item" type="button" onclick="cycleTheme()"><span id="themeIcon">☀️</span> <span id="themeLabel">Light</span></button></li>
+      <li><button class="dropdown-item" type="button" onclick="downloadImage()">📥 Download PNG</button></li>
+      <li><button class="dropdown-item" type="button" onclick="window.print()">🖨️ Print / PDF</button></li>
+    </ul>
+  </div>
+  <main id="main-content" class="app-shell" role="main">
+    <header class="hero viz-card p-4 p-lg-5 mb-4">
+      <p class="section-label mb-2">Codebase visualization</p>
+      <h1 class="mb-3"><span class="en">Uno Platform architecture map</span><span class="vi">Bản đồ kiến trúc Uno Platform</span></h1>
+      <p class="lead text-secondary mb-4 en">A bilingual, high-level map of this repository: how WinUI-compatible APIs, platform runtimes, source generators, samples, tests, and developer tooling fit together.</p>
+      <p class="lead text-secondary mb-4 vi">Một bản đồ song ngữ ở mức cao cho repository này: cách các API tương thích WinUI, runtime theo nền tảng, source generator, samples, tests và công cụ phát triển kết nối với nhau.</p>
+      <div class="controls d-flex flex-column flex-lg-row justify-content-between gap-3">
+        <div class="lang-switch" aria-label="Language selector">
+          <button class="toggle-btn active" id="btn-en" onclick="setLanguage('en')">English</button>
+          <button class="toggle-btn" id="btn-vi" onclick="setLanguage('vi')">Tiếng Việt</button>
+        </div>
+        <div class="focus-switch" aria-label="Diagram focus selector">
+          <button class="toggle-btn active" data-focus="all" onclick="setFocus('all')"><span class="en">All views</span><span class="vi">Tất cả</span></button>
+          <button class="toggle-btn" data-focus="runtime" onclick="setFocus('runtime')">Runtime</button>
+          <button class="toggle-btn" data-focus="build" onclick="setFocus('build')">Build</button>
+          <button class="toggle-btn" data-focus="tooling" onclick="setFocus('tooling')">Tooling</button>
+        </div>
+      </div>
+    </header>
+    <!-- SECTION: overview START -->
+    <section class="viz-card p-4 mb-4" aria-labelledby="overview-heading">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-7">
+          <p class="section-label mb-2">How to read this</p>
+          <h2 id="overview-heading" class="h3 mb-3"><span class="en">Layered views, not one giant graph</span><span class="vi">Các góc nhìn theo lớp, không phải một graph khổng lồ</span></h2>
+          <p class="en mb-3">The repo is large, so each diagram answers one question: context, architecture layers, package dependencies, app runtime flow, and build/developer tooling. Solid arrows represent direct project references or documented ownership. Dashed arrows mark inferred or optional paths.</p>
+          <p class="vi mb-3">Repo này rất lớn, vì vậy mỗi diagram trả lời một câu hỏi riêng: context, lớp kiến trúc, dependency package, luồng runtime của app, và tooling build/developer. Mũi tên liền thể hiện project reference trực tiếp hoặc ownership rõ ràng. Mũi tên nét đứt thể hiện luồng suy luận hoặc tùy chọn.</p>
+          <div class="legend" aria-label="Visual grammar legend">
+            <span class="legend-item"><span class="swatch core"></span><span class="en">Core API / framework</span><span class="vi">API lõi / framework</span></span>
+            <span class="legend-item"><span class="swatch runtime"></span><span class="en">Runtime host</span><span class="vi">Runtime host</span></span>
+            <span class="legend-item"><span class="swatch tool"></span><span class="en">Build or tooling</span><span class="vi">Build hoặc tooling</span></span>
+            <span class="legend-item"><span class="swatch external"></span><span class="en">External platform/system</span><span class="vi">Nền tảng/hệ thống ngoài</span></span>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="row g-3">
+            <div class="col-6"><div class="metric-card"><div class="metric-value">190</div><small>.csproj</small></div></div>
+            <div class="col-6"><div class="metric-card"><div class="metric-value">18</div><small>.slnf</small></div></div>
+            <div class="col-6"><div class="metric-card"><div class="metric-value">2.4k</div><small>XAML files</small></div></div>
+            <div class="col-6"><div class="metric-card"><div class="metric-value">16k</div><small>C# files</small></div></div>
+          </div>
+          <p class="small text-secondary mt-3 mb-0 en">Counts were sampled from the repository with <span class="kbd-like">fd</span>. They are useful for orientation, not release metrics.</p>
+          <p class="small text-secondary mt-3 mb-0 vi">Các con số được lấy mẫu từ repository bằng <span class="kbd-like">fd</span>. Chúng dùng để định hướng, không phải metric release chính thức.</p>
+        </div>
+      </div>
+    </section>
+    <!-- SECTION: overview END -->
+    <!-- SECTION: system-context START -->
+    <section class="diagram-section viz-card p-4 mb-4" data-focus="runtime tooling build" aria-labelledby="ctx-heading">
+      <p class="section-label mb-2">Diagram 1 · System context</p>
+      <h2 id="ctx-heading" class="h3 mb-2"><span class="en">Where Uno Platform sits</span><span class="vi">Uno Platform nằm ở đâu</span></h2>
+      <p class="text-secondary en">Purpose: show the major actors and external platform boundaries around the repository.</p>
+      <p class="text-secondary vi">Mục đích: thể hiện các actor chính và boundary nền tảng bên ngoài repository.</p>
+      <div class="small text-secondary mb-3"><strong>Spec:</strong> nodes = developers, apps, Uno repo, platform runtimes, WinUI API surface, browser/native OS; edges = builds, consumes, targets; layout = centered system context; confidence = high from repo structure and project names.</div>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 500" role="img" aria-labelledby="ctx-title ctx-desc">
+          <title id="ctx-title">System context diagram for Uno Platform repository</title>
+          <desc id="ctx-desc">Developers and apps consume the Uno repository, which implements WinUI APIs and targets WebAssembly, Skia desktop/mobile, Windows, Android, iOS, macOS, Linux and browser runtimes.</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"></path></marker></defs>
+          <g class="node external"><rect x="55" y="70" width="170" height="78" rx="18"></rect><text x="140" y="104">Developers</text><text class="subtext" x="140" y="126">build apps</text></g>
+          <g class="node external"><rect x="55" y="330" width="170" height="78" rx="18"></rect><text x="140" y="364">WinUI 3 API</text><text class="subtext" x="140" y="386">compatibility target</text></g>
+          <g class="node core"><rect x="365" y="165" width="270" height="150" rx="24"></rect><text x="500" y="218">Uno Platform repo</text><text class="subtext" x="500" y="244">src/Uno.UI · Uno.UWP</text><text class="subtext" x="500" y="264">Foundation · generators</text></g>
+          <g class="node runtime"><rect x="765" y="55" width="180" height="70" rx="18"></rect><text x="855" y="86">WebAssembly</text><text class="subtext" x="855" y="106">Browser / DOM</text></g>
+          <g class="node runtime"><rect x="765" y="165" width="180" height="70" rx="18"></rect><text x="855" y="196">Skia runtimes</text><text class="subtext" x="855" y="216">Win32/macOS/Linux</text></g>
+          <g class="node runtime"><rect x="765" y="275" width="180" height="70" rx="18"></rect><text x="855" y="306">Native mobile</text><text class="subtext" x="855" y="326">Android / iOS</text></g>
+          <g class="node external"><rect x="765" y="385" width="180" height="70" rx="18"></rect><text x="855" y="416">Windows / OS</text><text class="subtext" x="855" y="436">platform services</text></g>
+          <path class="edge strong" d="M225 109 C280 115 310 175 365 205"></path><text class="edge-label" x="300" y="135">uses</text>
+          <path class="edge" d="M225 369 C285 365 315 300 365 275"></path><text class="edge-label" x="300" y="350">matches API</text>
+          <path class="edge runtime" d="M635 205 C690 150 710 94 765 90"></path>
+          <path class="edge runtime" d="M635 228 C690 220 710 205 765 200"></path>
+          <path class="edge runtime" d="M635 252 C690 270 710 306 765 310"></path>
+          <path class="edge dashed" d="M635 285 C710 330 715 414 765 420"></path><text class="edge-label" x="704" y="349">platform APIs</text>
+        </svg>
+      </div>
+      <div class="row g-3 mt-3">
+        <div class="col-md-4 takeaway en">Uno exposes a WinUI-style API surface so application code can stay mostly shared.</div>
+        <div class="col-md-4 takeaway en">Runtime projects adapt that API to browser, Skia, native mobile, and OS services.</div>
+        <div class="col-md-4 takeaway en">The repo also contains validation apps, tests, source generators, and developer server tooling.</div>
+        <div class="col-md-4 takeaway vi">Uno cung cấp bề mặt API kiểu WinUI để code ứng dụng có thể dùng chung tối đa.</div>
+        <div class="col-md-4 takeaway vi">Các project runtime ánh xạ API đó sang browser, Skia, native mobile và dịch vụ hệ điều hành.</div>
+        <div class="col-md-4 takeaway vi">Repo còn chứa app kiểm chứng, tests, source generator và tooling dev server.</div>
+      </div>
+    </section>
+    <!-- SECTION: system-context END -->
+    <!-- SECTION: layered-architecture START -->
+    <section class="diagram-section viz-card p-4 mb-4" data-focus="runtime" aria-labelledby="layers-heading">
+      <p class="section-label mb-2">Diagram 2 · Layered architecture</p>
+      <h2 id="layers-heading" class="h3 mb-2"><span class="en">From app XAML to platform execution</span><span class="vi">Từ XAML của app đến thực thi theo nền tảng</span></h2>
+      <p class="text-secondary en">Purpose: explain the main vertical stack that turns shared C#/XAML into platform-specific behavior.</p>
+      <p class="text-secondary vi">Mục đích: giải thích stack dọc chính biến C#/XAML dùng chung thành hành vi theo từng nền tảng.</p>
+      <div class="small text-secondary mb-3"><strong>Spec:</strong> nodes = app layer, XAML generator, Uno.UI, Uno.UWP/Foundation, composition/rendering, runtime hosts; edges = compile-time generation and runtime calls; layout = top-to-bottom layers; confidence = high from source dirs and project references.</div>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 620" role="img" aria-labelledby="layers-title layers-desc">
+          <title id="layers-title">Layered architecture diagram</title>
+          <desc id="layers-desc">Top to bottom layers: Samples or app XAML, source generators, Uno UI framework, non-UI APIs, rendering/composition, and platform runtimes.</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"></path></marker></defs>
+          <rect class="layer-band" x="70" y="35" width="860" height="80" rx="18"></rect><text class="layer-title" x="90" y="62">Application surface</text>
+          <rect class="layer-band" x="70" y="145" width="860" height="90" rx="18"></rect><text class="layer-title" x="90" y="172">Compile-time generation</text>
+          <rect class="layer-band" x="70" y="265" width="860" height="105" rx="18"></rect><text class="layer-title" x="90" y="292">WinUI-compatible framework</text>
+          <rect class="layer-band" x="70" y="400" width="860" height="90" rx="18"></rect><text class="layer-title" x="90" y="427">Rendering and composition</text>
+          <rect class="layer-band" x="70" y="520" width="860" height="70" rx="18"></rect><text class="layer-title" x="90" y="547">Platform runtime</text>
+          <g class="node external"><rect x="345" y="58" width="310" height="44" rx="14"></rect><text x="500" y="81">App / SamplesApp C# + XAML</text></g>
+          <g class="node tool"><rect x="160" y="172" width="250" height="44" rx="14"></rect><text x="285" y="195">XamlFileGenerator</text></g>
+          <g class="node tool"><rect x="590" y="172" width="250" height="44" rx="14"></rect><text x="715" y="195">DependencyObjectGenerator</text></g>
+          <g class="node core"><rect x="135" y="305" width="210" height="48" rx="14"></rect><text x="240" y="329">Uno.UI</text><text class="subtext" x="240" y="346">controls · layout · XAML</text></g>
+          <g class="node core"><rect x="395" y="305" width="210" height="48" rx="14"></rect><text x="500" y="329">Uno.UWP</text><text class="subtext" x="500" y="346">non-UI APIs</text></g>
+          <g class="node core"><rect x="655" y="305" width="210" height="48" rx="14"></rect><text x="760" y="329">Uno.Foundation</text><text class="subtext" x="760" y="346">base services</text></g>
+          <g class="node core"><rect x="180" y="437" width="270" height="44" rx="14"></rect><text x="315" y="460">Uno.UI.Composition</text></g>
+          <g class="node core"><rect x="550" y="437" width="270" height="44" rx="14"></rect><text x="685" y="460">Rendering / platform adapters</text></g>
+          <g class="node runtime"><rect x="120" y="542" width="180" height="38" rx="13"></rect><text x="210" y="562">WASM runtime</text></g>
+          <g class="node runtime"><rect x="330" y="542" width="180" height="38" rx="13"></rect><text x="420" y="562">Skia runtime</text></g>
+          <g class="node runtime"><rect x="540" y="542" width="180" height="38" rx="13"></rect><text x="630" y="562">Mobile runtime</text></g>
+          <g class="node runtime"><rect x="750" y="542" width="130" height="38" rx="13"></rect><text x="815" y="562">Windows</text></g>
+          <path class="edge strong" d="M500 102 L285 172"></path><path class="edge strong" d="M500 102 L715 172"></path>
+          <path class="edge" d="M285 216 L240 305"></path><path class="edge" d="M715 216 L760 305"></path><path class="edge" d="M500 216 L500 305"></path>
+          <path class="edge strong" d="M240 353 C255 382 285 406 315 437"></path><path class="edge" d="M500 353 L500 406 C500 430 535 448 550 459"></path><path class="edge" d="M760 353 C745 386 715 410 685 437"></path>
+          <path class="edge runtime" d="M315 481 C285 515 245 532 210 542"></path><path class="edge runtime" d="M500 481 C480 515 450 533 420 542"></path><path class="edge runtime" d="M685 481 C670 512 650 530 630 542"></path><path class="edge dashed" d="M685 481 C735 515 780 530 815 542"></path>
+        </svg>
+      </div>
+      <div class="mt-3 en"><strong>Key idea:</strong> source generators are not optional decoration; they are part of the build pipeline that creates code for XAML and dependency-object patterns before runtime execution.</div>
+      <div class="mt-3 vi"><strong>Ý chính:</strong> source generator không chỉ là phần phụ; chúng thuộc pipeline build để tạo code cho XAML và pattern dependency-object trước khi chạy runtime.</div>
+    </section>
+    <!-- SECTION: layered-architecture END -->
+    <!-- SECTION: package-map START -->
+    <section class="diagram-section viz-card p-4 mb-4" data-focus="runtime build" aria-labelledby="pkg-heading">
+      <p class="section-label mb-2">Diagram 3 · Package map</p>
+      <h2 id="pkg-heading" class="h3 mb-2"><span class="en">Major project dependency direction</span><span class="vi">Chiều dependency của các project chính</span></h2>
+      <p class="text-secondary en">Purpose: show the shared backbone used by Skia and WebAssembly project variants.</p>
+      <p class="text-secondary vi">Mục đích: thể hiện backbone dùng chung cho các biến thể project Skia và WebAssembly.</p>
+      <div class="small text-secondary mb-3"><strong>Spec:</strong> nodes = selected csproj families; edges = observed ProjectReference direction; layout = left-to-right dependency map; confidence = high for shown references, incomplete for omitted packages.</div>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 540" role="img" aria-labelledby="pkg-title pkg-desc">
+          <title id="pkg-title">Package dependency map</title>
+          <desc id="pkg-desc">Selected Uno project references flow from runtime packages through UI and API packages into Foundation and logging packages, with source generators attached as analyzers/build inputs.</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"></path></marker></defs>
+          <g class="node runtime"><rect x="60" y="75" width="210" height="64" rx="16"></rect><text x="165" y="104">Uno.UI.Runtime.Skia</text><text class="subtext" x="165" y="124">host package</text></g>
+          <g class="node runtime"><rect x="60" y="225" width="210" height="64" rx="16"></rect><text x="165" y="254">Uno.UI.Runtime.WASM</text><text class="subtext" x="165" y="274">browser host</text></g>
+          <g class="node external"><rect x="60" y="375" width="210" height="64" rx="16"></rect><text x="165" y="404">SamplesApp / apps</text><text class="subtext" x="165" y="424">validation consumers</text></g>
+          <g class="node core"><rect x="360" y="150" width="220" height="70" rx="18"></rect><text x="470" y="181">Uno.UI.*</text><text class="subtext" x="470" y="202">Skia / Wasm / mobile</text></g>
+          <g class="node core"><rect x="360" y="285" width="220" height="64" rx="18"></rect><text x="470" y="313">Uno.UI.Composition.*</text><text class="subtext" x="470" y="333">composition layer</text></g>
+          <g class="node core"><rect x="675" y="90" width="210" height="64" rx="18"></rect><text x="780" y="118">Uno.UWP / Uno.*</text><text class="subtext" x="780" y="138">non-UI APIs</text></g>
+          <g class="node core"><rect x="675" y="220" width="210" height="64" rx="18"></rect><text x="780" y="248">Uno.Foundation.*</text><text class="subtext" x="780" y="268">base abstractions</text></g>
+          <g class="node core"><rect x="675" y="350" width="210" height="64" rx="18"></rect><text x="780" y="378">Dispatching / Logging</text><text class="subtext" x="780" y="398">support libraries</text></g>
+          <g class="node tool"><rect x="360" y="410" width="220" height="64" rx="18"></rect><text x="470" y="438">SourceGenerators</text><text class="subtext" x="470" y="458">Analyzer + MSBuild tasks</text></g>
+          <path class="edge strong" d="M270 107 C310 112 325 145 360 174"></path><path class="edge strong" d="M270 257 C315 245 330 205 360 190"></path>
+          <path class="edge" d="M270 407 C320 370 330 240 360 202"></path><path class="edge" d="M470 220 L470 285"></path>
+          <path class="edge strong" d="M580 178 C620 170 640 135 675 122"></path><path class="edge strong" d="M580 188 C620 196 640 238 675 252"></path><path class="edge" d="M580 316 C620 310 645 275 675 252"></path><path class="edge" d="M780 284 L780 350"></path>
+          <path class="edge dashed" d="M470 410 L470 220"></path><text class="edge-label" x="522" y="386">generated code</text>
+        </svg>
+      </div>
+      <p class="mt-3 mb-0 en">The map is intentionally selective: it shows the dependencies that explain the platform split. Add-ins, templates, analyzers, tests, and remote-control projects are important but are shown in later views or summarized as tooling.</p>
+      <p class="mt-3 mb-0 vi">Bản đồ này cố ý chọn lọc: nó thể hiện các dependency giúp giải thích việc tách theo platform. Add-ins, templates, analyzers, tests và remote-control project vẫn quan trọng nhưng được thể hiện ở góc nhìn tooling hoặc tóm tắt riêng.</p>
+    </section>
+    <!-- SECTION: package-map END -->
+    <!-- SECTION: runtime-flow START -->
+    <section class="diagram-section viz-card p-4 mb-4" data-focus="runtime" aria-labelledby="runtime-heading">
+      <p class="section-label mb-2">Diagram 4 · Runtime flow</p>
+      <h2 id="runtime-heading" class="h3 mb-2"><span class="en">A simplified app execution path</span><span class="vi">Luồng thực thi app đã giản lược</span></h2>
+      <p class="text-secondary en">Purpose: show how a shared UI definition becomes platform output at runtime.</p>
+      <p class="text-secondary vi">Mục đích: cho thấy một định nghĩa UI dùng chung trở thành output theo nền tảng khi chạy.</p>
+      <div class="small text-secondary mb-3"><strong>Spec:</strong> nodes = compiled app, generated InitializeComponent, dependency properties/events, layout/rendering, runtime target; edges = runtime sequence; layout = left-to-right sequence; confidence = medium-high, simplified from architecture and runtime project names.</div>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 360" role="img" aria-labelledby="runtime-title runtime-desc">
+          <title id="runtime-title">Runtime execution flow</title>
+          <desc id="runtime-desc">A shared Uno app loads generated XAML code, creates controls and dependency properties, performs layout and rendering, and emits platform-specific output through WebAssembly, Skia, native mobile, or Windows runtimes.</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"></path></marker></defs>
+          <g class="node external"><rect x="40" y="132" width="145" height="72" rx="18"></rect><text x="112" y="160">1. App</text><text class="subtext" x="112" y="181">C# + XAML</text></g>
+          <g class="node tool"><rect x="235" y="132" width="155" height="72" rx="18"></rect><text x="312" y="160">2. Generated</text><text class="subtext" x="312" y="181">InitializeComponent</text></g>
+          <g class="node core"><rect x="440" y="132" width="155" height="72" rx="18"></rect><text x="518" y="160">3. Controls</text><text class="subtext" x="518" y="181">DPs · events · styles</text></g>
+          <g class="node core"><rect x="645" y="132" width="155" height="72" rx="18"></rect><text x="722" y="160">4. Layout</text><text class="subtext" x="722" y="181">measure · arrange · draw</text></g>
+          <g class="node runtime"><rect x="850" y="48" width="120" height="50" rx="15"></rect><text x="910" y="74">DOM</text></g>
+          <g class="node runtime"><rect x="850" y="125" width="120" height="50" rx="15"></rect><text x="910" y="151">Skia</text></g>
+          <g class="node runtime"><rect x="850" y="202" width="120" height="50" rx="15"></rect><text x="910" y="228">Native</text></g>
+          <g class="node runtime"><rect x="850" y="279" width="120" height="50" rx="15"></rect><text x="910" y="305">Windows</text></g>
+          <path class="edge strong" d="M185 168 L235 168"></path><path class="edge strong" d="M390 168 L440 168"></path><path class="edge strong" d="M595 168 L645 168"></path>
+          <path class="edge runtime" d="M800 158 C830 115 835 80 850 73"></path><path class="edge runtime" d="M800 168 L850 150"></path><path class="edge runtime" d="M800 178 L850 227"></path><path class="edge dashed" d="M800 188 C828 234 835 295 850 304"></path>
+          <text class="edge-label" x="210" y="151">loads</text><text class="edge-label" x="415" y="151">creates</text><text class="edge-label" x="620" y="151">updates</text><text class="edge-label" x="824" y="132">adapts</text>
+        </svg>
+      </div>
+      <div class="row g-3 mt-3">
+        <div class="col-md-6 en"><strong>Why this matters:</strong> most control logic lives above the runtime split, so a fix in shared layout/control code can affect every target.</div>
+        <div class="col-md-6 en"><strong>Boundary:</strong> platform-specific files and runtime projects translate shared behavior into DOM, Skia rendering, or native views.</div>
+        <div class="col-md-6 vi"><strong>Vì sao quan trọng:</strong> phần lớn logic control nằm phía trên điểm tách runtime, nên một fix trong layout/control dùng chung có thể ảnh hưởng mọi target.</div>
+        <div class="col-md-6 vi"><strong>Boundary:</strong> file theo platform và runtime project dịch hành vi dùng chung sang DOM, Skia rendering hoặc native views.</div>
+      </div>
+    </section>
+    <!-- SECTION: runtime-flow END -->
+    <!-- SECTION: tooling-flow START -->
+    <section class="diagram-section viz-card p-4 mb-4" data-focus="build tooling" aria-labelledby="tooling-heading">
+      <p class="section-label mb-2">Diagram 5 · Build and tooling flow</p>
+      <h2 id="tooling-heading" class="h3 mb-2"><span class="en">How contributors usually validate changes</span><span class="vi">Cách contributor thường validate thay đổi</span></h2>
+      <p class="text-secondary en">Purpose: connect the repository's build configuration, generators, sample app, runtime tests, and DevServer/RemoteControl tooling.</p>
+      <p class="text-secondary vi">Mục đích: nối cấu hình build, generator, sample app, runtime tests và tooling DevServer/RemoteControl của repository.</p>
+      <div class="small text-secondary mb-3"><strong>Spec:</strong> nodes = crosstargeting props, solution filters, MSBuild/source generators, outputs, tests, samples, DevServer; edges = build/validate sequence; layout = left-to-right workflow; confidence = high from AGENTS.md and project files.</div>
+      <div class="arch-diagram">
+        <svg viewBox="0 0 1000 430" role="img" aria-labelledby="tooling-title tooling-desc">
+          <title id="tooling-title">Build and tooling workflow</title>
+          <desc id="tooling-desc">A contributor chooses a target framework override and solution filter, builds projects through MSBuild and source generators, then validates with unit tests, runtime tests, SamplesApp, and optionally DevServer/RemoteControl tooling.</desc>
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="currentColor"></path></marker></defs>
+          <g class="node tool"><rect x="45" y="82" width="175" height="70" rx="17"></rect><text x="132" y="110">Target override</text><text class="subtext" x="132" y="131">crosstargeting props</text></g>
+          <g class="node tool"><rect x="45" y="242" width="175" height="70" rx="17"></rect><text x="132" y="270">Solution filter</text><text class="subtext" x="132" y="291">Skia / Wasm / tests</text></g>
+          <g class="node tool"><rect x="315" y="162" width="180" height="70" rx="17"></rect><text x="405" y="190">MSBuild</text><text class="subtext" x="405" y="211">tasks + generators</text></g>
+          <g class="node core"><rect x="580" y="60" width="170" height="58" rx="16"></rect><text x="665" y="88">Assemblies</text><text class="subtext" x="665" y="107">Uno.* packages</text></g>
+          <g class="node core"><rect x="580" y="142" width="170" height="58" rx="16"></rect><text x="665" y="170">Generated code</text><text class="subtext" x="665" y="189">XAML · DP · resources</text></g>
+          <g class="node runtime"><rect x="580" y="224" width="170" height="58" rx="16"></rect><text x="665" y="252">SamplesApp</text><text class="subtext" x="665" y="271">visual validation</text></g>
+          <g class="node runtime"><rect x="580" y="306" width="170" height="58" rx="16"></rect><text x="665" y="334">Runtime tests</text><text class="subtext" x="665" y="353">Skia / Wasm / Windows</text></g>
+          <g class="node tool"><rect x="815" y="165" width="145" height="84" rx="18"></rect><text x="888" y="194">DevServer</text><text class="subtext" x="888" y="216">RemoteControl</text><text class="subtext" x="888" y="234">Hot Reload / MCP</text></g>
+          <path class="edge strong" d="M220 117 C265 120 290 165 315 184"></path><path class="edge strong" d="M220 277 C265 270 290 225 315 210"></path>
+          <path class="edge" d="M495 188 C535 145 548 100 580 89"></path><path class="edge" d="M495 197 L580 171"></path><path class="edge runtime" d="M495 210 C535 230 548 245 580 253"></path><path class="edge runtime" d="M495 218 C535 285 548 325 580 335"></path><path class="edge dashed" d="M750 253 C780 240 795 220 815 207"></path>
+        </svg>
+      </div>
+      <ul class="mt-3 mb-0 en">
+        <li>For fast local validation, the repo guidance favors platform-specific solution filters and Skia desktop when possible.</li>
+        <li>Source generators and MSBuild tasks are part of the build product, so generated output issues often need generator-level fixes.</li>
+        <li>Runtime/UI changes should be validated with the closest RuntimeTests path, not only compilation.</li>
+      </ul>
+      <ul class="mt-3 mb-0 vi">
+        <li>Để validate local nhanh, hướng dẫn repo ưu tiên solution filter theo platform và Skia desktop khi có thể.</li>
+        <li>Source generator và MSBuild task là một phần của sản phẩm build, nên lỗi output sinh ra thường cần fix ở tầng generator.</li>
+        <li>Thay đổi runtime/UI nên được validate bằng RuntimeTests gần nhất, không chỉ compile.</li>
+      </ul>
+    </section>
+    <!-- SECTION: tooling-flow END -->
+    <!-- SECTION: evidence START -->
+    <section class="viz-card p-4 mb-4 evidence" aria-labelledby="evidence-heading">
+      <p class="section-label mb-2">Evidence and confidence</p>
+      <h2 id="evidence-heading" class="h3 mb-3"><span class="en">What this visualization is based on</span><span class="vi">Visualization này dựa trên điều gì</span></h2>
+      <div class="row g-4">
+        <div class="col-lg-6 en">
+          <h3 class="h5">Observed evidence</h3>
+          <ul>
+            <li>Project families such as <code>src/Uno.UI</code>, <code>src/Uno.UWP</code>, <code>src/Uno.Foundation</code>, <code>src/Uno.UI.Runtime.Skia*</code>, and <code>src/Uno.UI.Runtime.WebAssembly</code>.</li>
+            <li>Solution filters including <code>Uno.UI-Skia-only.slnf</code>, <code>Uno.UI-Wasm-only.slnf</code>, <code>Uno.UI-UnitTests-only.slnf</code>, and mobile/Windows filters.</li>
+            <li>Source generator files such as <code>XamlFileGenerator.cs</code>, <code>XamlCodeGenerator.cs</code>, and <code>DependencyObjectGenerator.cs</code>.</li>
+            <li>Validation surfaces in <code>SamplesApp</code>, <code>Uno.UI.RuntimeTests</code>, and <code>Uno.UI.Tests</code>.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 vi">
+          <h3 class="h5">Bằng chứng đã quan sát</h3>
+          <ul>
+            <li>Các nhóm project như <code>src/Uno.UI</code>, <code>src/Uno.UWP</code>, <code>src/Uno.Foundation</code>, <code>src/Uno.UI.Runtime.Skia*</code>, và <code>src/Uno.UI.Runtime.WebAssembly</code>.</li>
+            <li>Các solution filter gồm <code>Uno.UI-Skia-only.slnf</code>, <code>Uno.UI-Wasm-only.slnf</code>, <code>Uno.UI-UnitTests-only.slnf</code>, và filter mobile/Windows.</li>
+            <li>Các file source generator như <code>XamlFileGenerator.cs</code>, <code>XamlCodeGenerator.cs</code>, và <code>DependencyObjectGenerator.cs</code>.</li>
+            <li>Các bề mặt validation trong <code>SamplesApp</code>, <code>Uno.UI.RuntimeTests</code>, và <code>Uno.UI.Tests</code>.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 en">
+          <h3 class="h5">Confidence notes</h3>
+          <p class="mb-0">High confidence for package names, high-level layers, solution filters, and generator/tooling presence. Runtime flow is simplified and should be read as an onboarding model, not a precise call graph.</p>
+        </div>
+        <div class="col-lg-6 vi">
+          <h3 class="h5">Ghi chú về độ tin cậy</h3>
+          <p class="mb-0">Độ tin cậy cao cho tên package, lớp kiến trúc mức cao, solution filter và sự tồn tại của generator/tooling. Luồng runtime đã được giản lược và nên đọc như model onboarding, không phải call graph chính xác.</p>
+        </div>
+      </div>
+    </section>
+    <!-- SECTION: evidence END -->
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function applyTheme(theme){
+      document.documentElement.classList.remove('theme-light','theme-dark');
+      document.documentElement.classList.add('theme-' + theme);
+      localStorage.setItem('viz-theme', theme);
+      document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = theme === 'dark' ? 'Dark' : 'Light';
+    }
+    function cycleTheme(){ applyTheme(document.documentElement.classList.contains('theme-dark') ? 'light' : 'dark'); }
+    function downloadImage(){
+      var node = document.getElementById('main-content');
+      htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: getComputedStyle(document.body).backgroundColor })
+        .then(function(dataUrl){ var a=document.createElement('a'); a.href=dataUrl; a.download='uno-platform-architecture-bilingual.png'; a.click(); })
+        .catch(function(err){ alert('PNG export failed: ' + err); });
+    }
+    function setLanguage(lang){
+      document.body.classList.toggle('lang-en', lang === 'en');
+      document.body.classList.toggle('lang-vi', lang === 'vi');
+      document.documentElement.lang = lang === 'vi' ? 'vi' : 'en';
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-vi').classList.toggle('active', lang === 'vi');
+      localStorage.setItem('viz-lang', lang);
+    }
+    function setFocus(focus){
+      document.querySelectorAll('[data-focus]').forEach(function(section){
+        var applies = focus === 'all' || section.getAttribute('data-focus').split(' ').indexOf(focus) !== -1;
+        section.classList.toggle('dimmed', !applies);
+        section.classList.toggle('highlight', applies && focus !== 'all');
+      });
+      document.querySelectorAll('.focus-switch .toggle-btn').forEach(function(btn){ btn.classList.toggle('active', btn.getAttribute('data-focus') === focus); });
+    }
+    (function init(){
+      var savedTheme = localStorage.getItem('viz-theme');
+      var initialTheme = savedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      applyTheme(initialTheme);
+      setLanguage(localStorage.getItem('viz-lang') || 'en');
+    })();
+  </script>
+</body>
+</html>
